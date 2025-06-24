@@ -9,27 +9,52 @@
 </head>
 <body>
   <div id="app">
-    <h1>Quick Workout Timer</h1>
 
-    <label for="workoutSelect">Choose workout:</label>
-    <select id="workoutSelect"></select>
+    <!-- ---------- MENU SCREEN ---------- -->
+    <div id="menuScreen">
+      <h1>Quick Workout Timer</h1>
 
-    <div id="controls">
-      <button id="startBtn">Start</button>
-      <button id="pauseBtn" class="hidden">Pause</button>
-      <button id="skipBtn"  class="hidden">Skip ▶︎</button>
+      <label for="workoutSelect">Choose workout:</label>
+      <select id="workoutSelect"></select>
+
+      <!-- live preview -->
+      <div id="preview" class="hidden">
+        <h3>Preview</h3>
+        <ul id="previewList"></ul>
+      </div>
+
+      <button id="startBtn" disabled>Start Workout</button>
     </div>
 
-    <div id="main">
-      <div id="display" class="hidden">
+    <!-- ---------- WORKOUT SCREEN ---------- -->
+    <div id="workoutScreen" class="hidden">
+
+      <!-- per-round progress bar -->
+      <div id="progressBar"></div>
+
+      <div id="display">
         <h2 id="exerciseName"></h2>
         <div id="timer"></div>
         <div id="roundInfo"></div>
+        <ul id="queue"></ul>
       </div>
 
-      <!-- upcoming queue -->
-      <ul id="queue" class="hidden"></ul>
+      <div id="workoutControls">
+        <button id="pauseBtn">Pause</button>
+        <button id="skipBtn">Skip ▶︎</button>
+        <button id="quitBtn">Quit</button>
+      </div>
     </div>
+
+    <!-- ---------- QUIT CONFIRM MODAL ---------- -->
+    <div id="confirmOverlay" class="hidden">
+      <div id="confirmBox">
+        <p>Are you sure you want to quit?</p>
+        <button id="confirmYes">YES</button>
+        <button id="confirmNo">NO</button>
+      </div>
+    </div>
+
   </div>
 
   <script src="app.js"></script>
