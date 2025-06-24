@@ -80,6 +80,39 @@ function beep() {
 }
 function updateTimer(t){ timerEl.textContent = t + "s"; }
 
+/* ---------- preview & progress helpers ---------- */
+function renderPreview(w) {
+  previewList.innerHTML = "";
+  (w.sequence || w.exercises).forEach(step => {
+    const name  = step.name || step;
+    const dur   = step.work || w.work;
+    const li = document.createElement("li");
+    li.textContent = `${name} – ${dur}s`;
+    previewList.appendChild(li);
+  });
+  preview.classList.remove("hidden");
+  startBtn.disabled = false;
+}
+
+function buildProgressBar(rounds) {
+  progressBar.innerHTML = "";
+  for (let i = 0; i < rounds; i++) {
+    const seg = document.createElement("div");
+    seg.className = "progress-seg";
+    progressBar.appendChild(seg);
+  }
+}
+function updateProgress(roundIdx, pctIntoRound) {
+  const segs = progressBar.children;
+  [...segs].forEach((seg, i) => {
+    if (i < roundIdx) seg.className = "progress-seg progress-complete";
+    else if (i === roundIdx) seg.className = "progress-seg progress-active";
+    else seg.className = "progress-seg";
+  });
+  // fill current seg via inline gradient
+  segs[roundIdx].style.background = `linear-gradient(to right,#4CAF50 ${pctIntoRound}%,#ddd ${pctIntoRound}%)`;
+}
+
 // ---------- queue rendering ----------
 function renderQueue() {
   queueEl.innerHTML = "";
@@ -109,15 +142,24 @@ function buildSeq(w) {
   }
 }
 
+/* ---------- menu interactions ---------- */
+select.addEventListener("change", () => {
+  const w = workouts[select.value];
+  if (!w) return;
+  renderPreview(w);
+});
+
 // ---------- core workflow ----------
-function startWorkout(){
-  buildSeq(workouts[select.value]);
-  currentPhase = 0;        isPaused = false;
-  display.classList.remove("hidden");
-  queueEl.classList.remove("hidden");
-  startBtn.disabled = true;
-  pauseBtn.classList.remove("hidden");
-  skipBtn.classList.remove("hidden");
+function startWorkout() {
+  const w = workouts[select.value];
+  buildSeq(w);
+  buildProgressBar(w.rounds);
+
+  // flip screens
+  menuScreen.classList.add("hidden");
+  workoutScreen.classList.remove("hidden");
+
+  currentPhase = 0; isPaused = false;
   pauseBtn.textContent = "Pause";
   nextPhase();
 }
@@ -133,10 +175,16 @@ function nextPhase(){
   intervalId = setInterval(tick,1000);
 }
 
-function tick(){
-  if(isPaused) return;
+function tick() {
+  if (isPaused) return;
   timeLeft--;
-  if(timeLeft <= 0){ currentPhase++; nextPhase(); }
+  const w   = workouts[select.value];
+  const dur = seq[currentPhase].duration;
+  const pctIntoRound =
+    ((w.sequence ? seq[currentPhase].round : currentPhase / seq.length) | 0);
+  updateProgress(seq[currentPhase].round - 1, 100 * (1 - timeLeft / dur));
+
+  if (timeLeft <= 0) { currentPhase++; nextPhase(); }
   else updateTimer(timeLeft);
 }
 
@@ -157,6 +205,20 @@ skipBtn.onclick  = () => {
   currentPhase++; nextPhase();
 };
 startBtn.onclick = startWorkout;
+
+/* ---------- quit workflow ---------- */
+quitBtn.onclick = () => confirmOverlay.classList.remove("hidden");
+confirmNo.onclick  = () => confirmOverlay.classList.add("hidden");
+confirmYes.onclick = () => {
+  confirmOverlay.classList.add("hidden");
+  clearInterval(intervalId);
+  finishWorkout();   // reuse existing cleanup
+  // back to menu
+  workoutScreen.classList.add("hidden");
+  menuScreen.classList.remove("hidden");
+  preview.classList.add("hidden");
+  startBtn.disabled = true;
+};
 
 // ---------- initial dropdown ----------
 workouts.forEach((w,i)=>{
