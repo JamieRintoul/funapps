@@ -54,15 +54,28 @@ const workouts = [
 ];
 // ===== end workouts block =====
 // ---------- element refs ----------
-const select    = document.getElementById("workoutSelect");
-const startBtn  = document.getElementById("startBtn");
-const pauseBtn  = document.getElementById("pauseBtn");
-const skipBtn   = document.getElementById("skipBtn");
-const display   = document.getElementById("display");
-const exName    = document.getElementById("exerciseName");
-const timerEl   = document.getElementById("timer");
-const roundInfo = document.getElementById("roundInfo");
-const queueEl   = document.getElementById("queue");
+// ---------- element refs ----------
+const select          = document.getElementById("workoutSelect");
+const startBtn        = document.getElementById("startBtn");
+const pauseBtn        = document.getElementById("pauseBtn");
+const skipBtn         = document.getElementById("skipBtn");
+const quitBtn         = document.getElementById("quitBtn");
+
+const display         = document.getElementById("display");
+const exName          = document.getElementById("exerciseName");
+const timerEl         = document.getElementById("timer");
+const roundInfo       = document.getElementById("roundInfo");
+const queueEl         = document.getElementById("queue");
+
+const preview         = document.getElementById("preview");
+const previewList     = document.getElementById("previewList");
+const menuScreen      = document.getElementById("menuScreen");
+const workoutScreen   = document.getElementById("workoutScreen");
+const progressBar     = document.getElementById("progressBar");
+
+const confirmOverlay  = document.getElementById("confirmOverlay");
+const confirmYes      = document.getElementById("confirmYes");
+const confirmNo       = document.getElementById("confirmNo");
 
 // ---------- state ----------
 let seq = [], currentPhase = 0, timeLeft = 0, intervalId = null, isPaused = false;
