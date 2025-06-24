@@ -240,4 +240,4 @@ workouts.forEach((w,i)=>{
   select.appendChild(opt);
 });
 
-workouts.forEach(...)), call:  js\nrenderPreview(workouts[0]);\n
+workouts.forEach(...), call:  js\nrenderPreview(workouts[0]);\n
