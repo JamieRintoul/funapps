@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Quick Workout Timer</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <div id="app">
+    <h1>Quick Workout Timer</h1>
+
+    <label for="workoutSelect">Choose workout:</label>
+    <select id="workoutSelect"></select>
+
+    <div id="controls">
+      <button id="startBtn">Start</button>
+      <button id="pauseBtn" class="hidden">Pause</button>
+      <button id="skipBtn"  class="hidden">Skip ▶︎</button>
+    </div>
+
+    <div id="main">
+      <div id="display" class="hidden">
+        <h2 id="exerciseName"></h2>
+        <div id="timer"></div>
+        <div id="roundInfo"></div>
+      </div>
+
+      <!-- upcoming queue -->
+      <ul id="queue" class="hidden"></ul>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
