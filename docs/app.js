@@ -239,3 +239,5 @@ workouts.forEach((w,i)=>{
   opt.value=i; opt.textContent=w.name;
   select.appendChild(opt);
 });
+
+js\nselect.selectedIndex = -1;   // no initial selection\n  
