@@ -68,6 +68,10 @@ select, button { width: 100%; padding: 10px; font-size: 1rem; margin-top: 6px; }
   background:rgba(0,0,0,0.45);
   display:flex; align-items:center; justify-content:center;
 }
+
+/* keep overlay hidden when the .hidden class is present */
+#confirmOverlay.hidden { display: none; }
+
 #confirmBox {
   background:#fff; padding:20px 26px; border-radius:6px;
   text-align:center; max-width:260px; width:80%;
