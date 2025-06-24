@@ -240,4 +240,4 @@ workouts.forEach((w,i)=>{
   select.appendChild(opt);
 });
 
-js\nselect.selectedIndex = -1;   // no initial selection\n  
+workouts.forEach(...)), call:  js\nrenderPreview(workouts[0]);\n
