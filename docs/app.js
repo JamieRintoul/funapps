@@ -71,6 +71,13 @@ const queueEl         = document.getElementById("queue");
 
 const preview         = document.getElementById("preview");
 const previewList     = document.getElementById("previewList");
+// custom form elements
+const customForm      = document.getElementById("customForm");
+const cwName          = document.getElementById("cwName");
+const cwExercises     = document.getElementById("cwExercises");
+const cwWork          = document.getElementById("cwWork");
+const cwRest          = document.getElementById("cwRest");
+const cwRounds        = document.getElementById("cwRounds");
 const menuScreen      = document.getElementById("menuScreen");
 const workoutScreen   = document.getElementById("workoutScreen");
 const progressBar     = document.getElementById("progressBar");
@@ -89,6 +96,35 @@ function goToMenu() {
   workoutControls.classList.add("hidden");
   progressBar.classList.add("hidden");
   menuBtn.classList.add("hidden");
+}
+
+// ---------- custom workout helpers ----------
+function saveCustomWorkout(w) {
+  const saved = JSON.parse(localStorage.getItem("customWorkouts") || "[]");
+  saved.push(w);
+  localStorage.setItem("customWorkouts", JSON.stringify(saved));
+}
+
+function loadCustomWorkouts() {
+  const saved = localStorage.getItem("customWorkouts");
+  if (!saved) return;
+  try {
+    const arr = JSON.parse(saved);
+    arr.forEach(w => workouts.push(w));
+  } catch (e) {}
+}
+
+function populateDropdown() {
+  select.innerHTML = "";
+  workouts.forEach((w, i) => {
+    const opt = document.createElement("option");
+    opt.value = i;
+    opt.textContent = w.name;
+    select.appendChild(opt);
+  });
+  select.selectedIndex = -1;
+  startBtn.disabled = true;
+  preview.classList.add("hidden");
 }
 
 // ---------- state ----------
@@ -314,11 +350,25 @@ confirmYes.onclick = () => {
   goToMenu();
 };
 
-// ---------- initial dropdown ----------
-workouts.forEach((w,i)=>{
-  const opt=document.createElement("option");
-  opt.value=i; opt.textContent=w.name;
-  select.appendChild(opt);
+// ---------- custom form handling ----------
+customForm.addEventListener("submit", e => {
+  e.preventDefault();
+  const workout = {
+    name: cwName.value.trim(),
+    rounds: parseInt(cwRounds.value, 10),
+    work: parseInt(cwWork.value, 10),
+    rest: parseInt(cwRest.value, 10),
+    exercises: cwExercises.value.split(",").map(s => s.trim()).filter(Boolean)
+  };
+  if (!workout.name || workout.exercises.length === 0) return;
+  workouts.push(workout);
+  saveCustomWorkout(workout);
+  populateDropdown();
+  select.value = workouts.length - 1;
+  renderPreview(workout);
+  customForm.reset();
 });
 
-select.selectedIndex = -1;
+// ---------- initial dropdown ----------
+loadCustomWorkouts();
+populateDropdown();
