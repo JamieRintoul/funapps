@@ -190,11 +190,21 @@ function nextPhase(){
 function tick() {
   if (isPaused) return;
   timeLeft--;
-  const w   = workouts[select.value];
-  const dur = seq[currentPhase].duration;
-  const pctIntoRound =
-    ((w.sequence ? seq[currentPhase].round : currentPhase / seq.length) | 0);
-  updateProgress(seq[currentPhase].round - 1, 100 * (1 - timeLeft / dur));
+
+  const current = seq[currentPhase];
+  const curRound = current.round;
+  const dur = current.duration;
+
+  // percentage of elapsed time within the whole round
+  let roundTotal = 0, roundElapsed = dur - timeLeft;
+  seq.forEach((p, idx) => {
+    if (p.round === curRound) {
+      roundTotal += p.duration;
+      if (idx < currentPhase) roundElapsed += p.duration;
+    }
+  });
+  const pctIntoRound = (roundElapsed / roundTotal) * 100;
+  updateProgress(curRound - 1, pctIntoRound);
 
   if (timeLeft <= 0) { currentPhase++; nextPhase(); }
   else updateTimer(timeLeft);
