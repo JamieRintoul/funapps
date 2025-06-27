@@ -45,7 +45,7 @@ select, button { width: 100%; padding: 10px; font-size: 1rem; margin-top: 6px; }
   height:8px;
   display:flex;
   margin-bottom:18px;
-  background:#ddd;
+  background:transparent;
   gap:2px;
 }
 .progress-seg {

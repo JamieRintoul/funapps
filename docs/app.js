@@ -74,11 +74,22 @@ const previewList     = document.getElementById("previewList");
 const menuScreen      = document.getElementById("menuScreen");
 const workoutScreen   = document.getElementById("workoutScreen");
 const progressBar     = document.getElementById("progressBar");
+const menuBtn         = document.getElementById("menuBtn");
 
 const confirmOverlay  = document.getElementById("confirmOverlay");
 const confirmYes      = document.getElementById("confirmYes");
 const confirmNo       = document.getElementById("confirmNo");
 const countdown       = document.getElementById("countdown");
+
+function goToMenu() {
+  workoutScreen.classList.add("hidden");
+  menuScreen.classList.remove("hidden");
+  preview.classList.add("hidden");
+  startBtn.disabled = true;
+  workoutControls.classList.add("hidden");
+  progressBar.classList.add("hidden");
+  menuBtn.classList.add("hidden");
+}
 
 // ---------- state ----------
 let seq = [], currentPhase = 0, timeLeft = 0, intervalId = null, isPaused = false;
@@ -196,6 +207,7 @@ function startWorkout() {
   pauseBtn.classList.remove("hidden");
   skipBtn.classList.remove("hidden");
   quitBtn.classList.remove("hidden");
+  menuBtn.classList.add("hidden");
   queueEl.classList.remove("hidden");
 
   // flip screens
@@ -256,7 +268,7 @@ function finishWorkout(){
   quitBtn.classList.add("hidden");
   workoutControls.classList.add("hidden");
   progressBar.classList.add("hidden");
-
+  menuBtn.classList.remove("hidden");
   startBtn.disabled=false; queueEl.classList.add("hidden"); beep();
 }
 
@@ -284,8 +296,12 @@ pauseBtn.onclick = () => {
 };
 skipBtn.onclick  = () => {
   clearInterval(intervalId);
-  currentPhase++; nextPhase();
+  // finish the current phase instantly so progress updates correctly
+  timeLeft = 1;
+  tick();
 };
+
+menuBtn.onclick  = goToMenu;
 startBtn.onclick = startCountdown;
 
 /* ---------- quit workflow ---------- */
@@ -295,11 +311,7 @@ confirmYes.onclick = () => {
   confirmOverlay.classList.add("hidden");
   clearInterval(intervalId);
   finishWorkout();   // reuse existing cleanup
-  // back to menu
-  workoutScreen.classList.add("hidden");
-  menuScreen.classList.remove("hidden");
-  preview.classList.add("hidden");
-  startBtn.disabled = true;
+  goToMenu();
 };
 
 // ---------- initial dropdown ----------
