@@ -16,7 +16,8 @@ select, button { width: 100%; padding: 10px; font-size: 1rem; margin-top: 6px; }
 #timer { font-size: 3rem; margin: 10px 0; }
 #roundInfo { font-size: 0.9rem; color: #555; }
 .hidden { display: none; }
-#controls { margin-top:6px; display:flex; gap:6px; }
+/* ---- control buttons ---- */
+#workoutControls { margin-top:6px; display:flex; gap:6px; }
 #skipBtn { flex:1; }
 #pauseBtn { flex:1; }
 
@@ -57,10 +58,6 @@ select, button { width: 100%; padding: 10px; font-size: 1rem; margin-top: 6px; }
 #queue { list-style:none; padding:0; margin:14px 0 0 0; font-size:0.85rem; }
 #queue li { padding:4px 0; border-bottom:1px solid #eee; }
 #queue li.current { font-weight:bold; }
-
-/* ---- control buttons ---- */
-#workoutControls { display:flex; gap:8px; margin-top:18px; }
-#workoutControls button { flex:1; }
 
 /* ---- quit confirm modal ---- */
 #confirmOverlay {
