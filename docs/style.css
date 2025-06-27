@@ -14,6 +14,7 @@ select, button { width: 100%; padding: 10px; font-size: 1rem; margin-top: 6px; }
 #display { margin-top: 20px; }
 #exerciseName { font-size: 1.3rem; margin: 10px 0; }
 #timer { font-size: 3rem; margin: 10px 0; }
+#countdown { font-size: 3rem; margin: 10px 0; }
 #roundInfo { font-size: 0.9rem; color: #555; }
 .hidden { display: none; }
 /* ---- control buttons ---- */

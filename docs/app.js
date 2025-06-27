@@ -78,6 +78,7 @@ const progressBar     = document.getElementById("progressBar");
 const confirmOverlay  = document.getElementById("confirmOverlay");
 const confirmYes      = document.getElementById("confirmYes");
 const confirmNo       = document.getElementById("confirmNo");
+const countdown       = document.getElementById("countdown");
 
 // ---------- state ----------
 let seq = [], currentPhase = 0, timeLeft = 0, intervalId = null, isPaused = false;
@@ -259,6 +260,23 @@ function finishWorkout(){
   startBtn.disabled=false; queueEl.classList.add("hidden"); beep();
 }
 
+function startCountdown() {
+  let count = 3;
+  countdown.textContent = count;
+  countdown.classList.remove("hidden");
+  startBtn.disabled = true;
+  const cdInterval = setInterval(() => {
+    count--;
+    if (count < 0) {
+      clearInterval(cdInterval);
+      countdown.classList.add("hidden");
+      startWorkout();
+    } else {
+      countdown.textContent = count;
+    }
+  }, 1000);
+}
+
 // ---------- controls ----------
 pauseBtn.onclick = () => {
   isPaused = !isPaused;
@@ -268,7 +286,7 @@ skipBtn.onclick  = () => {
   clearInterval(intervalId);
   currentPhase++; nextPhase();
 };
-startBtn.onclick = startWorkout;
+startBtn.onclick = startCountdown;
 
 /* ---------- quit workflow ---------- */
 quitBtn.onclick = () => confirmOverlay.classList.remove("hidden");
