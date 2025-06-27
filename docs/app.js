@@ -60,6 +60,9 @@ const pauseBtn        = document.getElementById("pauseBtn");
 const skipBtn         = document.getElementById("skipBtn");
 const quitBtn         = document.getElementById("quitBtn");
 
+// container for pause/skip/quit
+const workoutControls = document.getElementById("workoutControls");
+
 const display         = document.getElementById("display");
 const exName          = document.getElementById("exerciseName");
 const timerEl         = document.getElementById("timer");
@@ -71,10 +74,19 @@ const previewList     = document.getElementById("previewList");
 const menuScreen      = document.getElementById("menuScreen");
 const workoutScreen   = document.getElementById("workoutScreen");
 const progressBar     = document.getElementById("progressBar");
+const menuBtn         = document.getElementById("menuBtn");
 
 const confirmOverlay  = document.getElementById("confirmOverlay");
 const confirmYes      = document.getElementById("confirmYes");
 const confirmNo       = document.getElementById("confirmNo");
+
+function goToMenu() {
+  workoutScreen.classList.add("hidden");
+  menuScreen.classList.remove("hidden");
+  preview.classList.add("hidden");
+  startBtn.disabled = true;
+  menuBtn.classList.add("hidden");
+}
 
 // ---------- state ----------
 let seq = [], currentPhase = 0, timeLeft = 0, intervalId = null, isPaused = false;
@@ -117,12 +129,32 @@ function buildProgressBar(rounds) {
 function updateProgress(roundIdx, pctIntoRound) {
   const segs = progressBar.children;
   [...segs].forEach((seg, i) => {
-    if (i < roundIdx) seg.className = "progress-seg progress-complete";
-    else if (i === roundIdx) seg.className = "progress-seg progress-active";
-    else seg.className = "progress-seg";
+    if (i < roundIdx) {
+      seg.className = "progress-seg progress-complete";
+      seg.style.background = "";
+    } else if (i === roundIdx) {
+      seg.className = "progress-seg progress-active";
+    } else {
+      seg.className = "progress-seg";
+      seg.style.background = "";
+    }
   });
   // fill current seg via inline gradient
   segs[roundIdx].style.background = `linear-gradient(to right,#4CAF50 ${pctIntoRound}%,#ddd ${pctIntoRound}%)`;
+}
+
+function updateRoundProgress() {
+  const current = seq[currentPhase];
+  const curRound = current.round;
+  let roundTotal = 0, roundElapsed = 0;
+  seq.forEach((p, idx) => {
+    if (p.round === curRound) {
+      roundTotal += p.duration;
+      if (idx < currentPhase) roundElapsed += p.duration;
+    }
+  });
+  const pct = (roundElapsed / roundTotal) * 100;
+  updateProgress(curRound - 1, pct);
 }
 
 // ---------- queue rendering ----------
@@ -167,6 +199,14 @@ function startWorkout() {
   buildSeq(w);
   buildProgressBar(w.rounds);
 
+  progressBar.classList.remove("hidden");
+  workoutControls.classList.remove("hidden");
+  pauseBtn.classList.remove("hidden");
+  skipBtn.classList.remove("hidden");
+  quitBtn.classList.remove("hidden");
+  menuBtn.classList.add("hidden");
+  queueEl.classList.remove("hidden");
+
   // flip screens
   menuScreen.classList.add("hidden");
   workoutScreen.classList.remove("hidden");
@@ -182,7 +222,10 @@ function nextPhase(){
   timeLeft = phase.duration;
   exName.textContent = phase.name;
   roundInfo.textContent = `Round ${phase.round} of ${workouts[select.value].rounds}`;
-  updateTimer(timeLeft);   renderQueue();   beep();
+  updateTimer(timeLeft);
+  renderQueue();
+  updateRoundProgress();
+  beep();
   clearInterval(intervalId);
   intervalId = setInterval(tick,1000);
 }
@@ -212,8 +255,19 @@ function tick() {
 
 function finishWorkout(){
   clearInterval(intervalId);
+  // ensure last round shows as complete
+  const totalRounds = workouts[select.value].rounds;
+  updateProgress(totalRounds - 1, 100);
+
   exName.textContent="Done!"; timerEl.textContent=""; roundInfo.textContent="";
-  pauseBtn.classList.add("hidden"); skipBtn.classList.add("hidden");
+  pauseBtn.classList.add("hidden");
+  skipBtn.classList.add("hidden");
+  quitBtn.classList.add("hidden");
+  workoutControls.classList.add("hidden");
+  progressBar.classList.add("hidden");
+
+  menuBtn.classList.remove("hidden");
+
   startBtn.disabled=false; queueEl.classList.add("hidden"); beep();
 }
 
@@ -227,6 +281,7 @@ skipBtn.onclick  = () => {
   currentPhase++; nextPhase();
 };
 startBtn.onclick = startWorkout;
+menuBtn.onclick  = goToMenu;
 
 /* ---------- quit workflow ---------- */
 quitBtn.onclick = () => confirmOverlay.classList.remove("hidden");
@@ -235,11 +290,7 @@ confirmYes.onclick = () => {
   confirmOverlay.classList.add("hidden");
   clearInterval(intervalId);
   finishWorkout();   // reuse existing cleanup
-  // back to menu
-  workoutScreen.classList.add("hidden");
-  menuScreen.classList.remove("hidden");
-  preview.classList.add("hidden");
-  startBtn.disabled = true;
+  goToMenu();
 };
 
 // ---------- initial dropdown ----------
