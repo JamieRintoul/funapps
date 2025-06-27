@@ -79,6 +79,7 @@ const menuBtn         = document.getElementById("menuBtn");
 const confirmOverlay  = document.getElementById("confirmOverlay");
 const confirmYes      = document.getElementById("confirmYes");
 const confirmNo       = document.getElementById("confirmNo");
+const countdown       = document.getElementById("countdown");
 
 function goToMenu() {
   workoutScreen.classList.add("hidden");
@@ -271,6 +272,23 @@ function finishWorkout(){
   startBtn.disabled=false; queueEl.classList.add("hidden"); beep();
 }
 
+function startCountdown() {
+  let count = 3;
+  countdown.textContent = count;
+  countdown.classList.remove("hidden");
+  startBtn.disabled = true;
+  const cdInterval = setInterval(() => {
+    count--;
+    if (count < 0) {
+      clearInterval(cdInterval);
+      countdown.classList.add("hidden");
+      startWorkout();
+    } else {
+      countdown.textContent = count;
+    }
+  }, 1000);
+}
+
 // ---------- controls ----------
 pauseBtn.onclick = () => {
   isPaused = !isPaused;
@@ -282,8 +300,9 @@ skipBtn.onclick  = () => {
   timeLeft = 1;
   tick();
 };
-startBtn.onclick = startWorkout;
+
 menuBtn.onclick  = goToMenu;
+startBtn.onclick = startCountdown;
 
 /* ---------- quit workflow ---------- */
 quitBtn.onclick = () => confirmOverlay.classList.remove("hidden");
