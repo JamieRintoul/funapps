@@ -267,9 +267,7 @@ function finishWorkout(){
   quitBtn.classList.add("hidden");
   workoutControls.classList.add("hidden");
   progressBar.classList.add("hidden");
-
   menuBtn.classList.remove("hidden");
-
   startBtn.disabled=false; queueEl.classList.add("hidden"); beep();
 }
 
