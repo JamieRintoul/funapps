@@ -54,7 +54,6 @@ const workouts = [
 ];
 // ===== end workouts block =====
 // ---------- element refs ----------
-// ---------- element refs ----------
 const select          = document.getElementById("workoutSelect");
 const startBtn        = document.getElementById("startBtn");
 const pauseBtn        = document.getElementById("pauseBtn");
