@@ -85,6 +85,8 @@ function goToMenu() {
   menuScreen.classList.remove("hidden");
   preview.classList.add("hidden");
   startBtn.disabled = true;
+  workoutControls.classList.add("hidden");
+  progressBar.classList.add("hidden");
   menuBtn.classList.add("hidden");
 }
 
@@ -278,7 +280,9 @@ pauseBtn.onclick = () => {
 };
 skipBtn.onclick  = () => {
   clearInterval(intervalId);
-  currentPhase++; nextPhase();
+  // finish the current phase instantly so progress updates correctly
+  timeLeft = 1;
+  tick();
 };
 startBtn.onclick = startWorkout;
 menuBtn.onclick  = goToMenu;
